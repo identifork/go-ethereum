@@ -341,7 +341,7 @@ func (self *worker) wait() {
 			}
 			glog.V(logger.Info).Infof("🔨  Mined %sblock (#%v / %x). %s", stale, block.Number(), block.Hash().Bytes()[:4], confirm)
 
-			self.commitNewWork()
+			//self.commitNewWork()
 		}
 	}
 }
