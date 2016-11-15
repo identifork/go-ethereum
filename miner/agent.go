@@ -28,7 +28,8 @@ import (
 )
 
 type CpuAgent struct {
-	mu sync.Mutex
+	mu     sync.Mutex
+	mining sync.Mutex
 
 	workCh        chan *Work
 	quit          chan struct{}
@@ -79,6 +80,7 @@ out:
 				close(self.quitCurrentOp)
 			}
 			self.quitCurrentOp = make(chan struct{})
+			self.mining.Lock()
 			go self.mine(work, self.quitCurrentOp)
 			self.mu.Unlock()
 		case <-self.quit:
@@ -117,6 +119,8 @@ func (self *CpuAgent) mine(work *Work, stop <-chan struct{}) {
 	} else {
 		self.returnCh <- nil
 	}
+
+	self.mining.Unlock()
 }
 
 func (self *CpuAgent) GetHashRate() int64 {
